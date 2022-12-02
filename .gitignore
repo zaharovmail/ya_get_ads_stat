@@ -4,3 +4,4 @@ __pycache__/
 test.py
 test_config.py
 data.csv
+main.log
