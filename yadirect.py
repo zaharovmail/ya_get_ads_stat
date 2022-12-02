@@ -52,24 +52,24 @@ def YaAdsGet(token, login, adid):
 
         # Обработка запроса
         if result.status_code != 200 or result.json().get("error", False):
-            config.log("Произошла ошибка при обращении к серверу API Директа.")
-            config.log("Код ошибки: {}".format(result.json()["error"]["error_code"]))
-            config.log("Описание ошибки: {}".format(u(result.json()["error"]["error_detail"])))
-            config.log("RequestId: {}".format(result.headers.get("RequestId", False)))
+            print("Произошла ошибка при обращении к серверу API Директа.")
+            print("Код ошибки: {}".format(result.json()["error"]["error_code"]))
+            print("Описание ошибки: {}".format(u(result.json()["error"]["error_detail"])))
+            print("RequestId: {}".format(result.headers.get("RequestId", False)))
         else:
             # Вывод результата
-            config.log("Запрос: {}".format(u(result.json())))
+            print("Запрос: {}".format(u(result.json())))
             info = u(result.json()['result']['Ads'][0])
             return info
 
     # Обработка ошибки, если не удалось соединиться с сервером API Директа
     except ConnectionError:
         # В данном случае мы рекомендуем повторить запрос позднее
-        config.log("Произошла ошибка соединения с сервером API.")
+        print("Произошла ошибка соединения с сервером API.")
 
     # Если возникла какая-либо другая ошибка
     except Exception as error:
-        config.log("Произошла непредвиденная ошибка:\n" + repr(error))
+        print("Произошла непредвиденная ошибка:\n" + repr(error))
 
 def yaStat(token, login):
     headers = {
@@ -104,33 +104,33 @@ def yaStat(token, login):
             req = requests.post(config.ReportsURL5, body, headers=headers)
             req.encoding = 'utf-8'
             if req.status_code == 400:
-                info = ("Параметры запроса указаны неверно или достигнут лимит отчетов в очереди\n" + format(u(req.text)))
+                print ("Параметры запроса указаны неверно или достигнут лимит отчетов в очереди\n" + format(u(req.text)))
                 break
             elif req.status_code == 200:
                 info = format(u(req.text))
                 break
             elif req.status_code == 201:
-                info = ("Отчет успешно поставлен в очередь в режиме офлайн")
+                print ("Отчет успешно поставлен в очередь в режиме офлайн")
                 retryIn = int(req.headers.get("retryIn", 60))
                 sleep(retryIn)
             elif req.status_code == 202:
-                info = ("Отчет формируется в режиме офлайн")
+                print ("Отчет формируется в режиме офлайн")
                 retryIn = int(req.headers.get("retryIn", 60))
                 sleep(retryIn)
             elif req.status_code == 500:
-                info = ("При формировании отчета произошла ошибка. Пожалуйста, попробуйте повторить запрос позднее")
+                print ("При формировании отчета произошла ошибка. Пожалуйста, попробуйте повторить запрос позднее")
                 break
             elif req.status_code == 502:
-                info = ("Время формирования отчета превысило серверное ограничение.")
+                print ("Время формирования отчета превысило серверное ограничение.")
                 break
             else:
-                info = ("Произошла непредвиденная ошибка")
+                print ("Произошла непредвиденная ошибка")
                 break
         except ConnectionError:
             # В данном случае мы рекомендуем повторить запрос позднее
-            info = ("Произошла ошибка соединения с сервером API")
+            print ("Произошла ошибка соединения с сервером API")
             break
         except Exception as error:
-            info = ("Произошла непредвиденная ошибка:\n" + repr(error))
+            print ("Произошла непредвиденная ошибка:\n" + repr(error))
             break
     return info

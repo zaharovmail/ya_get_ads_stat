@@ -1,5 +1,5 @@
 from yadirect import YaAdsGet,yaStat
-from config import adid
+from config import adid, token, login
 import csv
 
 # info = yaStat("y0_AgAAAABiiaceAAaF6gAAAADT8SPLOL5XjwKeTLqRUXLJPbRMh_dPaWU", "mybitdirect")
@@ -13,7 +13,7 @@ with open("data.csv", mode="w", encoding='utf-8') as data:
     file_writer = csv.writer(data, delimiter=",", lineterminator="\r")
     file_writer.writerow(fieldnames)
     for ad in adid:
-        info = YaAdsGet("y0_AgAAAABiiaceAAaF6gAAAADT8SPLOL5XjwKeTLqRUXLJPbRMh_dPaWU", "mybitdirect", ad)
+        info = YaAdsGet(token, login, ad)
         print(info)
         if info['Id'] == None:
             pass
